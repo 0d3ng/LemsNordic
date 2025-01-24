@@ -1,0 +1,29 @@
+[versions]
+agp = "8.8.0"
+ble = "2.5.1"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
+log = "2.5.0"
+material = "1.12.0"
+activity = "1.10.0"
+constraintlayout = "2.2.0"
+scanner = "1.6.0"
+
+[libraries]
+ble = { module = "no.nordicsemi.android:ble", version.ref = "ble" }
+ble-common = { module = "no.nordicsemi.android:ble-common", version.ref = "ble" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+log = { module = "no.nordicsemi.android:log", version.ref = "log" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+scanner = { module = "no.nordicsemi.android.support.v18:scanner", version.ref = "scanner" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+
