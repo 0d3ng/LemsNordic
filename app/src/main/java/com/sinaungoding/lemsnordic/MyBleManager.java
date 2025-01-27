@@ -26,7 +26,7 @@ public class MyBleManager extends ObservableBleManager {
     private static final String SERVICE_BTEVS1 = "f9cc1523-4e0a-49e5-8cf3-0007e819ea1e";
     private static final String CHARACTERISTIC_BTEVS1 = "f9cc152a-4e0a-49e5-8cf3-0007e819ea1e";
     private BluetoothGattCharacteristic targetCharacteristic;
-    private final MutableLiveData<SensorData> receivedValue = new MutableLiveData<>();
+    private final MutableLiveData<SensorData> dataLiveData = new MutableLiveData<>();
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT;
 
     static {
@@ -43,8 +43,8 @@ public class MyBleManager extends ObservableBleManager {
         return new MyBleManagerGattCallback();
     }
 
-    public MutableLiveData<SensorData> getReceivedValue() {
-        return receivedValue;
+    public MutableLiveData<SensorData> getDataLiveData() {
+        return dataLiveData;
     }
 
     private class MyBleManagerGattCallback extends BleManagerGattCallback {
@@ -85,8 +85,7 @@ public class MyBleManager extends ObservableBleManager {
                             Log.i(TAG, "onDataReceived PM4         : " + pm4);
                             Log.i(TAG, "onDataReceived PM10        : " + pm10);
                             SensorData sensorData = new SensorData(co2, pm1, pm25, pm4, pm10, temperature, hum, timestamp);
-//                            receivedValue.postValue(data.toString());
-
+                            dataLiveData.postValue(sensorData);
                         });
 
                 enableNotifications(targetCharacteristic)
@@ -132,7 +131,7 @@ public class MyBleManager extends ObservableBleManager {
         @Override
         protected void onServicesInvalidated() {
             Log.d(TAG, "Services invalidated. Cleaning up...");
-            receivedValue.postValue(null);
+            dataLiveData.postValue(null);
             targetCharacteristic = null;
         }
 
