@@ -7,16 +7,18 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
-import no.nordicsemi.android.ble.BleManager;
+import no.nordicsemi.android.ble.livedata.ObservableBleManager;
 
-public class MyBleManager extends BleManager {
+public class MyBleManager extends ObservableBleManager {
     private static final String TAG = MyBleManager.class.getSimpleName();
     private static final String SERVICE_BTEVS1 = "f9cc1523-4e0a-49e5-8cf3-0007e819ea1e";
     private static final String CHARACTERISTIC_BTEVS1 = "f9cc152a-4e0a-49e5-8cf3-0007e819ea1e";
     private BluetoothGattCharacteristic targetCharacteristic;
+    private final MutableLiveData<String> receivedValue = new MutableLiveData<>();
 
     public MyBleManager(@NonNull Context context) {
         super(context);
@@ -26,6 +28,10 @@ public class MyBleManager extends BleManager {
     @Override
     protected BleManagerGattCallback getGattCallback() {
         return new MyBleManagerGattCallback();
+    }
+
+    public MutableLiveData<String> getReceivedValue() {
+        return receivedValue;
     }
 
     private class MyBleManagerGattCallback extends BleManagerGattCallback {
@@ -42,6 +48,7 @@ public class MyBleManager extends BleManager {
                 setNotificationCallback(targetCharacteristic)
                         .with((device, data) -> {
                             Log.d(TAG, "onDataReceived: " + data.toString());
+                            receivedValue.postValue(data.toString());
                         });
 
                 enableNotifications(targetCharacteristic)
@@ -69,15 +76,7 @@ public class MyBleManager extends BleManager {
             for (BluetoothGattService service : services) {
                 List<BluetoothGattCharacteristic> characteristics = service.getCharacteristics();
                 for (BluetoothGattCharacteristic characteristic : characteristics) {
-                    Log.d(TAG, String.format("Service %s characteristic %s",service.getUuid().toString(),characteristic.getUuid().toString()));
-
-//                    if ((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
-//                        Log.d(TAG, "Characteristic supports READ: " + characteristic.getUuid());
-//                    }
-//                    if ((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-//                        Log.d(TAG, "Characteristic supports NOTIFY: " + characteristic.getUuid());
-//                        targetCharacteristic = characteristic;
-//                    }
+                    Log.d(TAG, String.format("Service %s characteristic %s", service.getUuid().toString(), characteristic.getUuid().toString()));
 
                     if ((service.getUuid().toString().equals(SERVICE_BTEVS1)) && (characteristic.getUuid().toString().equals(CHARACTERISTIC_BTEVS1))) {
                         targetCharacteristic = characteristic;
@@ -95,6 +94,7 @@ public class MyBleManager extends BleManager {
         @Override
         protected void onServicesInvalidated() {
             Log.d(TAG, "Services invalidated. Cleaning up...");
+            receivedValue.postValue(null);
             targetCharacteristic = null;
         }
 

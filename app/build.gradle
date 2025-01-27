@@ -30,9 +30,11 @@ android {
 }
 
 dependencies {
+    implementation libs.anychart.android
     implementation libs.log
     implementation libs.ble.common
     implementation libs.scanner
+    implementation libs.ble.livedata
     implementation libs.ble
     implementation libs.appcompat
     implementation libs.material

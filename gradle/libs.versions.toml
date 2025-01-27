@@ -1,5 +1,6 @@
 [versions]
 agp = "8.8.0"
+anychartAndroid = "1.1.5"
 ble = "2.5.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -12,8 +13,10 @@ constraintlayout = "2.2.0"
 scanner = "1.6.0"
 
 [libraries]
+anychart-android = { module = "com.github.AnyChart:AnyChart-Android", version.ref = "anychartAndroid" }
 ble = { module = "no.nordicsemi.android:ble", version.ref = "ble" }
 ble-common = { module = "no.nordicsemi.android:ble-common", version.ref = "ble" }
+ble-livedata = { module = "no.nordicsemi.android:ble-livedata", version.ref = "ble" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
