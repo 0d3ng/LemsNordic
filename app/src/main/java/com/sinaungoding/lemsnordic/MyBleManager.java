@@ -1,6 +1,5 @@
 package com.sinaungoding.lemsnordic;
 
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
@@ -12,13 +11,11 @@ import androidx.annotation.NonNull;
 import java.util.List;
 
 import no.nordicsemi.android.ble.BleManager;
-import no.nordicsemi.android.ble.callback.DataReceivedCallback;
-import no.nordicsemi.android.ble.callback.SuccessCallback;
-import no.nordicsemi.android.ble.data.Data;
 
 public class MyBleManager extends BleManager {
     private static final String TAG = MyBleManager.class.getSimpleName();
-
+    private static final String SERVICE_BTEVS1 = "f9cc1523-4e0a-49e5-8cf3-0007e819ea1e";
+    private static final String CHARACTERISTIC_BTEVS1 = "f9cc152a-4e0a-49e5-8cf3-0007e819ea1e";
     private BluetoothGattCharacteristic targetCharacteristic;
 
     public MyBleManager(@NonNull Context context) {
@@ -44,8 +41,7 @@ public class MyBleManager extends BleManager {
 
                 setNotificationCallback(targetCharacteristic)
                         .with((device, data) -> {
-                            String value = data.getStringValue(0);
-                            Log.d(TAG, "onDataReceived: " + value);
+                            Log.d(TAG, "onDataReceived: " + data.toString());
                         });
 
                 enableNotifications(targetCharacteristic)
@@ -57,24 +53,6 @@ public class MyBleManager extends BleManager {
                         .with((device, data) -> {
                             byte[] dataValue = data.getValue();
                             Log.d(TAG, "initialize data: " + data.toString());
-                            float scalePM = 100.0f;
-                            float scaleTemp = 10.0f;
-                            float scaleHumidity = 1.0f;
-                            float co2 = toInt(dataValue[0], dataValue[1]);
-                            float pm1 = toFloat(dataValue[2], dataValue[3], scalePM);
-                            float pm25 = toFloat(dataValue[4], dataValue[5], scalePM);
-                            float pm4 = toFloat(dataValue[6], dataValue[7], scalePM);
-                            float pm10 = toFloat(dataValue[8], dataValue[9], scalePM);
-                            float temperature = toFloat(dataValue[10], dataValue[11], scaleTemp);
-                            float humidity = toFloat(dataValue[12], dataValue[13], scaleHumidity);
-
-                            Log.d(TAG, "CO2: " + co2);
-                            Log.d(TAG, "PM1: " + pm1);
-                            Log.d(TAG, "PM2.5: " + pm25);
-                            Log.d(TAG, "PM4: " + pm4);
-                            Log.d(TAG, "PM10: " + pm10);
-                            Log.d(TAG, "Temperature: " + temperature);
-                            Log.d(TAG, "Humidity: " + humidity);
                         })
                         .fail((device, status) -> Log.e(TAG, "Failed to read characteristic, status: " + status))
                         .enqueue();
@@ -89,17 +67,22 @@ public class MyBleManager extends BleManager {
             List<BluetoothGattService> services = gatt.getServices();
 
             for (BluetoothGattService service : services) {
-                Log.d(TAG, "Found service: " + service.getUuid());
                 List<BluetoothGattCharacteristic> characteristics = service.getCharacteristics();
                 for (BluetoothGattCharacteristic characteristic : characteristics) {
-                    Log.d(TAG, "Found characteristic: " + characteristic.getUuid());
+                    Log.d(TAG, String.format("Service %s characteristic %s",service.getUuid().toString(),characteristic.getUuid().toString()));
 
-                    if ((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
-                        Log.d(TAG, "Characteristic supports READ: " + characteristic.getUuid());
-                    }
-                    if ((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                        Log.d(TAG, "Characteristic supports NOTIFY: " + characteristic.getUuid());
+//                    if ((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
+//                        Log.d(TAG, "Characteristic supports READ: " + characteristic.getUuid());
+//                    }
+//                    if ((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
+//                        Log.d(TAG, "Characteristic supports NOTIFY: " + characteristic.getUuid());
+//                        targetCharacteristic = characteristic;
+//                    }
+
+                    if ((service.getUuid().toString().equals(SERVICE_BTEVS1)) && (characteristic.getUuid().toString().equals(CHARACTERISTIC_BTEVS1))) {
                         targetCharacteristic = characteristic;
+                        Log.d(TAG, String.format("Found characteristic %s service %s", service.getUuid().toString(), characteristic.getUuid().toString()));
+                        break;
                     }
                 }
             }
