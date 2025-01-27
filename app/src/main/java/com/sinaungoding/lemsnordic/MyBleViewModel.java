@@ -16,7 +16,7 @@ public class MyBleViewModel extends AndroidViewModel {
         bleManager = new MyBleManager(application);
     }
 
-    public LiveData<String> getReceivedValue() {
+    public LiveData<SensorData> getReceivedValue() {
         return bleManager.getReceivedValue();
     }
 

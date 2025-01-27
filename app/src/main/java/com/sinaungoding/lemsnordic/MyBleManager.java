@@ -13,7 +13,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,7 +26,12 @@ public class MyBleManager extends ObservableBleManager {
     private static final String SERVICE_BTEVS1 = "f9cc1523-4e0a-49e5-8cf3-0007e819ea1e";
     private static final String CHARACTERISTIC_BTEVS1 = "f9cc152a-4e0a-49e5-8cf3-0007e819ea1e";
     private BluetoothGattCharacteristic targetCharacteristic;
-    private final MutableLiveData<String> receivedValue = new MutableLiveData<>();
+    private final MutableLiveData<SensorData> receivedValue = new MutableLiveData<>();
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT;
+
+    static {
+        SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    }
 
     public MyBleManager(@NonNull Context context) {
         super(context);
@@ -36,7 +43,7 @@ public class MyBleManager extends ObservableBleManager {
         return new MyBleManagerGattCallback();
     }
 
-    public MutableLiveData<String> getReceivedValue() {
+    public MutableLiveData<SensorData> getReceivedValue() {
         return receivedValue;
     }
 
@@ -68,7 +75,8 @@ public class MyBleManager extends ObservableBleManager {
                             float pm4 = parseAndRoundFloat(temp);
                             temp = Arrays.copyOfRange(Objects.requireNonNull(data.getValue()), 17, 21);
                             float pm10 = parseAndRoundFloat(temp);
-
+                            String timestamp = SIMPLE_DATE_FORMAT.format(new Date());
+                            Log.i(TAG, "onDataReceived timestamp   : " + timestamp);
                             Log.i(TAG, "onDataReceived Humidity    : " + hum);
                             Log.i(TAG, "onDataReceived Temperature : " + temperature);
                             Log.i(TAG, "onDataReceived CO2         : " + co2);
@@ -76,6 +84,7 @@ public class MyBleManager extends ObservableBleManager {
                             Log.i(TAG, "onDataReceived PM25        : " + pm25);
                             Log.i(TAG, "onDataReceived PM4         : " + pm4);
                             Log.i(TAG, "onDataReceived PM10        : " + pm10);
+                            SensorData sensorData = new SensorData(co2, pm1, pm25, pm4, pm10, temperature, hum, timestamp);
 //                            receivedValue.postValue(data.toString());
 
                         });
