@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
             bleManager.connect(device)
                     .retry(3, 100)
                     .done(connectedDevice -> {
+//                        viewModel.connectDevice(connectedDevice);
                         Log.d(TAG, "Connected to device: " + connectedDevice.getName());
                         updateStatus("Connected to " + connectedDevice.getName());
                     })

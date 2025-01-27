@@ -1,6 +1,7 @@
 package com.sinaungoding.lemsnordic;
 
 import android.app.Application;
+import android.bluetooth.BluetoothDevice;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -17,6 +18,10 @@ public class MyBleViewModel extends AndroidViewModel {
 
     public LiveData<String> getReceivedValue() {
         return bleManager.getReceivedValue();
+    }
+
+    public void connectDevice(BluetoothDevice device) {
+        bleManager.connect(device).enqueue();
     }
 
 }

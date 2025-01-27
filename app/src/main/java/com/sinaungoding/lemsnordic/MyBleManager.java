@@ -9,7 +9,13 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import no.nordicsemi.android.ble.livedata.ObservableBleManager;
 
@@ -48,7 +54,30 @@ public class MyBleManager extends ObservableBleManager {
                 setNotificationCallback(targetCharacteristic)
                         .with((device, data) -> {
                             Log.d(TAG, "onDataReceived: " + data.toString());
-                            receivedValue.postValue(data.toString());
+                            String[] sensors = data.toString().split("-");
+                            int hum = Integer.parseInt(sensors[2], 16);
+                            String hex = sensors[1] + sensors[0];
+                            hex = hex.replaceAll("[()\\s]", "").replace("0x", "");
+                            float temperature = (float) Integer.parseInt(hex, 16) / 10;
+                            int co2 = Integer.parseInt(sensors[4] + sensors[3], 16);
+                            byte[] temp = Arrays.copyOfRange(Objects.requireNonNull(data.getValue()), 5, 9);
+                            float pm1 = parseAndRoundFloat(temp);
+                            temp = Arrays.copyOfRange(Objects.requireNonNull(data.getValue()), 9, 13);
+                            float pm25 = parseAndRoundFloat(temp);
+                            temp = Arrays.copyOfRange(Objects.requireNonNull(data.getValue()), 13, 17);
+                            float pm4 = parseAndRoundFloat(temp);
+                            temp = Arrays.copyOfRange(Objects.requireNonNull(data.getValue()), 17, 21);
+                            float pm10 = parseAndRoundFloat(temp);
+
+                            Log.i(TAG, "onDataReceived Humidity    : " + hum);
+                            Log.i(TAG, "onDataReceived Temperature : " + temperature);
+                            Log.i(TAG, "onDataReceived CO2         : " + co2);
+                            Log.i(TAG, "onDataReceived PM1         : " + pm1);
+                            Log.i(TAG, "onDataReceived PM25        : " + pm25);
+                            Log.i(TAG, "onDataReceived PM4         : " + pm4);
+                            Log.i(TAG, "onDataReceived PM10        : " + pm10);
+//                            receivedValue.postValue(data.toString());
+
                         });
 
                 enableNotifications(targetCharacteristic)
@@ -100,12 +129,12 @@ public class MyBleManager extends ObservableBleManager {
 
     }
 
-    int toInt(byte b1, byte b2) {
-        return ((b1 & 0xFF) << 8) | (b2 & 0xFF);
-    }
-
-    float toFloat(byte b1, byte b2, float scaleFactor) {
-        int intValue = toInt(b1, b2);
-        return intValue / scaleFactor;
+    private float parseAndRoundFloat(byte[] data) {
+        // Konversi byte array ke nilai float
+        float value = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+        // Bulatkan nilai float ke satu digit di belakang koma
+        BigDecimal bd = new BigDecimal(Float.toString(value));
+        bd = bd.setScale(1, RoundingMode.HALF_UP); // Pembulatan ke atas jika >= 0.5
+        return bd.floatValue();
     }
 }
