@@ -56,14 +56,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(SensorData sensorData) {
                 Log.d(TAG, "onChanged: " + sensorData);
-                timestampTextView.setText(sensorData.getTimestamp());
-                co2Tv.setText("" + sensorData.getCo2());
-                pm1Tv.setText("" + sensorData.getPm1());
-                pm25Tv.setText("" + sensorData.getPm25());
-                pm4Tv.setText("" + sensorData.getPm4());
-                pm10Tv.setText("" + sensorData.getPm10());
-                tempTv.setText("" + sensorData.getTemp());
-                humTv.setText("" + sensorData.getHumidity());
+                if (sensorData != null) {
+                    timestampTextView.setText("Last Update Data:" + sensorData.getTimestamp());
+                    co2Tv.setText("CO2: " + sensorData.getCo2());
+                    pm1Tv.setText("PM1: " + sensorData.getPm1());
+                    pm25Tv.setText("PM2.5: " + sensorData.getPm25());
+                    pm4Tv.setText("PM4: " + sensorData.getPm4());
+                    pm10Tv.setText("PM10: " + sensorData.getPm10());
+                    tempTv.setText("Temperatur: " + sensorData.getTemp());
+                    humTv.setText("Humidity: " + sensorData.getHumidity());
+                }
             }
         });
 
