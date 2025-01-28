@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private MyBleManager bleManager;
     private static final int PERMISSION_REQUEST_CODE = 101;
     private final List<BluetoothDevice> scannedDevices = new ArrayList<>();
-    private AnyChartView anyChartView;
+    private TextView tvDevice;
 
 
     @Override
@@ -42,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView timestampTextView = findViewById(R.id.timestampTextView);
+        TextView timestampTextView = findViewById(R.id.timestampValueTextView);
+        tvDevice = findViewById(R.id.timestampLabelTextView);
         TextView co2Tv = findViewById(R.id.co2TextView);
         TextView pm25Tv = findViewById(R.id.pm25TextView);
         TextView pm1Tv = findViewById(R.id.pm1TextView);
@@ -57,14 +58,14 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(SensorData sensorData) {
                 Log.d(TAG, "onChanged: " + sensorData);
                 if (sensorData != null) {
-                    timestampTextView.setText("Last Update Data:" + sensorData.getTimestamp());
-                    co2Tv.setText("CO2: " + sensorData.getCo2());
-                    pm1Tv.setText("PM1: " + sensorData.getPm1());
-                    pm25Tv.setText("PM2.5: " + sensorData.getPm25());
-                    pm4Tv.setText("PM4: " + sensorData.getPm4());
-                    pm10Tv.setText("PM10: " + sensorData.getPm10());
-                    tempTv.setText("Temperatur: " + sensorData.getTemp());
-                    humTv.setText("Humidity: " + sensorData.getHumidity());
+                    timestampTextView.setText(sensorData.getTimestamp());
+                    co2Tv.setText("" + sensorData.getCo2());
+                    pm1Tv.setText("" + sensorData.getPm1());
+                    pm25Tv.setText("" + sensorData.getPm25());
+                    pm4Tv.setText("" + sensorData.getPm4());
+                    pm10Tv.setText("" + sensorData.getPm10());
+                    tempTv.setText("" + sensorData.getTemp());
+                    humTv.setText("" + sensorData.getHumidity());
                 }
             }
         });
@@ -103,6 +104,12 @@ public class MainActivity extends AppCompatActivity {
                     .done(connectedDevice -> {
                         Log.d(TAG, "Connected to device: " + connectedDevice.getName());
                         updateStatus("Connected to " + connectedDevice.getName());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvDevice.setText(String.format("Last update data (%s)", connectedDevice.getName()));
+                            }
+                        });
                     })
                     .fail((failedDevice, status) -> {
                         Log.e(TAG, "Connection failed to device: " + failedDevice.getName() + ", status: " + status);
