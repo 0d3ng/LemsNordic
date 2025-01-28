@@ -230,7 +230,7 @@
                             android:layout_height="26dp"
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
-                            android:src="@drawable/pm25_icon" />
+                            android:src="@drawable/virus_icon" />
 
                         <TextView
                             android:id="@+id/pm1TextView"
@@ -273,14 +273,39 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintWidth_percent="0.31">
 
-                    <TextView
-                        android:id="@+id/pm4TextView"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:text="PM4: "
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:src="@drawable/virus_icon" />
+
+                        <TextView
+                            android:id="@+id/pm4TextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="PM4: "
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tvLabelPm4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:text="PM4 (mg/m3)"
+                            android:textColor="@color/white"
+                            android:textSize="12sp" />
+                    </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
                 <!-- PM10 -->
@@ -300,14 +325,41 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintWidth_percent="0.31">
 
-                    <TextView
-                        android:id="@+id/pm10TextView"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:text="PM10: "
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:src="@drawable/virus_icon" />
+
+                        <TextView
+                            android:id="@+id/pm10TextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="PM10: "
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tvLabelPm10"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:text="PM4 (mg/m3)"
+                            android:textColor="@color/white"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+
                 </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -334,14 +386,41 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintWidth_percent="0.45">
 
-                    <TextView
-                        android:id="@+id/tempTextView"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:text="Temperature: "
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:src="@drawable/temp_icon" />
+
+                        <TextView
+                            android:id="@+id/tempTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="Temperature: "
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tvLabelTemp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:text="Temperature (celcius)"
+                            android:textColor="@color/white"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
                 </androidx.cardview.widget.CardView>
 
                 <!-- Humidity -->
@@ -361,14 +440,40 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintWidth_percent="0.45">
 
-                    <TextView
-                        android:id="@+id/humidityTextView"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:text="Humidity: "
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:src="@drawable/humidity_icon" />
+
+                        <TextView
+                            android:id="@+id/humidityTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="Humidity: "
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tvLabelHum"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:text="Humidity (%)"
+                            android:textColor="@color/white"
+                            android:textSize="12sp" />
+                    </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
