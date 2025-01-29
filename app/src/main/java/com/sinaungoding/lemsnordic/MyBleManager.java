@@ -9,7 +9,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import com.sinaungoding.lemsnordic.api.ApiClient;
 import com.sinaungoding.lemsnordic.api.ApiService;
 
 import java.math.BigDecimal;
@@ -23,9 +22,6 @@ import java.util.List;
 import java.util.Objects;
 
 import no.nordicsemi.android.ble.livedata.ObservableBleManager;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MyBleManager extends ObservableBleManager {
     private static final String TAG = MyBleManager.class.getSimpleName();
