@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Lems Nordic</string>
+    <string name="base_url">Lems Nordic</string>
+    <string name="app_token">Lems Nordic</string>
 </resources>

@@ -9,6 +9,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.sinaungoding.lemsnordic.api.ApiClient;
+import com.sinaungoding.lemsnordic.api.ApiService;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.ByteBuffer;
@@ -20,6 +23,9 @@ import java.util.List;
 import java.util.Objects;
 
 import no.nordicsemi.android.ble.livedata.ObservableBleManager;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MyBleManager extends ObservableBleManager {
     private static final String TAG = MyBleManager.class.getSimpleName();
@@ -33,8 +39,12 @@ public class MyBleManager extends ObservableBleManager {
         SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     }
 
+    private ApiService apiService;
+
     public MyBleManager(@NonNull Context context) {
         super(context);
+        // TODO: 1/29/2025 Please prepare end point from this function
+//        apiService = ApiClient.getClient(context).create(ApiService.class);
     }
 
     @NonNull
@@ -86,6 +96,24 @@ public class MyBleManager extends ObservableBleManager {
                             Log.i(TAG, "onDataReceived PM10        : " + pm10);
                             SensorData sensorData = new SensorData(co2, pm1, pm25, pm4, pm10, temperature, hum, timestamp);
                             dataLiveData.postValue(sensorData);
+
+                            // TODO: 1/29/2025 if end point is ready, please uncomment
+//                            Call<SensorData> call = apiService.insert(sensorData);
+//                            call.enqueue(new Callback<>() {
+//                                @Override
+//                                public void onResponse(Call<SensorData> call, Response<SensorData> response) {
+//                                    if (response.isSuccessful()) {
+//                                        Log.d(TAG, String.format("success: %s %d", response.message(), response.code()));
+//                                    } else {
+//                                        Log.d(TAG, String.format("success: %s %d", response.message(), response.code()));
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onFailure(Call<SensorData> call, Throwable throwable) {
+//                                    Log.e(TAG, String.format("failure: %s", throwable.getMessage()), throwable);
+//                                }
+//                            });
                         });
 
                 enableNotifications(targetCharacteristic)
