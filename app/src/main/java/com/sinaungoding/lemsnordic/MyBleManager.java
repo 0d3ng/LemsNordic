@@ -90,7 +90,7 @@ public class MyBleManager extends ObservableBleManager {
                             Log.i(TAG, "onDataReceived PM25        : " + pm25);
                             Log.i(TAG, "onDataReceived PM4         : " + pm4);
                             Log.i(TAG, "onDataReceived PM10        : " + pm10);
-                            SensorData sensorData = new SensorData(co2, pm1, pm25, pm4, pm10, temperature, hum, timestamp);
+                            SensorData sensorData = new SensorData(co2, pm1, pm25, pm4, pm10, temperature, hum, 0, 0, timestamp);
                             dataLiveData.postValue(sensorData);
 
                             // TODO: 1/29/2025 if end point is ready, please uncomment

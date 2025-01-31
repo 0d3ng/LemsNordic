@@ -8,9 +8,11 @@ public class SensorData {
     private float pm10;
     private float temp;
     private int humidity;
+    private double latitude;
+    private double longitude;
     private String timestamp;
 
-    public SensorData(int co2, float pm1, float pm25, float pm4, float pm10, float temp, int humidity, String timestamp) {
+    public SensorData(int co2, float pm1, float pm25, float pm4, float pm10, float temp, int humidity, double latitude, double longitude, String timestamp) {
         this.co2 = co2;
         this.pm1 = pm1;
         this.pm25 = pm25;
@@ -18,6 +20,8 @@ public class SensorData {
         this.pm10 = pm10;
         this.temp = temp;
         this.humidity = humidity;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.timestamp = timestamp;
     }
 
@@ -88,6 +92,22 @@ public class SensorData {
         this.timestamp = timestamp;
     }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
     @Override
     public String toString() {
         return "SensorData{" +
@@ -98,6 +118,8 @@ public class SensorData {
                 ", pm10=" + pm10 +
                 ", temp=" + temp +
                 ", humidity=" + humidity +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
                 ", timestamp='" + timestamp + '\'' +
                 '}';
     }
