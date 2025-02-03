@@ -9,7 +9,11 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.sinaungoding.lemsnordic.api.Amedas;
+import com.sinaungoding.lemsnordic.api.ApiClient;
 import com.sinaungoding.lemsnordic.api.ApiService;
+import com.sinaungoding.lemsnordic.api.CombinedData;
+import com.sinaungoding.lemsnordic.api.SensorData;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,6 +26,9 @@ import java.util.List;
 import java.util.Objects;
 
 import no.nordicsemi.android.ble.livedata.ObservableBleManager;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MyBleManager extends ObservableBleManager {
     private static final String TAG = MyBleManager.class.getSimpleName();
@@ -40,7 +47,7 @@ public class MyBleManager extends ObservableBleManager {
     public MyBleManager(@NonNull Context context) {
         super(context);
         // TODO: 1/29/2025 Please prepare end point from this function
-//        apiService = ApiClient.getClient(context).create(ApiService.class);
+        apiService = ApiClient.getClient(context).create(ApiService.class);
     }
 
     @NonNull
@@ -92,24 +99,25 @@ public class MyBleManager extends ObservableBleManager {
                             Log.i(TAG, "onDataReceived PM10        : " + pm10);
                             SensorData sensorData = new SensorData(co2, pm1, pm25, pm4, pm10, temperature, hum, 0, 0, timestamp);
                             dataLiveData.postValue(sensorData);
+                            Call<Amedas> amedasCall = apiService.getLastAmedas();
+                            amedasCall.enqueue(new Callback<>() {
+                                @Override
+                                public void onResponse(@NonNull Call<Amedas> call, @NonNull Response<Amedas> response) {
+                                    Log.i(TAG, "onResponse: " + call.isExecuted());
+                                    if (response.isSuccessful()) {
+                                        Log.d(TAG, String.format("amedasCall success: %s %d", response.message(), response.code()));
+                                        Amedas amedas = response.body();
+                                        CombinedData.Data combine = new CombinedData.Data(sensorData, amedas);
+                                        CombinedData combinedData = new CombinedData(SIMPLE_DATE_FORMAT.format(new Date()), combine);
+                                        insertSensorData(combinedData);
+                                    }
+                                }
 
-                            // TODO: 1/29/2025 if end point is ready, please uncomment
-//                            Call<SensorData> call = apiService.insert(sensorData);
-//                            call.enqueue(new Callback<>() {
-//                                @Override
-//                                public void onResponse(Call<SensorData> call, Response<SensorData> response) {
-//                                    if (response.isSuccessful()) {
-//                                        Log.d(TAG, String.format("success: %s %d", response.message(), response.code()));
-//                                    } else {
-//                                        Log.d(TAG, String.format("success: %s %d", response.message(), response.code()));
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onFailure(Call<SensorData> call, Throwable throwable) {
-//                                    Log.e(TAG, String.format("failure: %s", throwable.getMessage()), throwable);
-//                                }
-//                            });
+                                @Override
+                                public void onFailure(@NonNull Call<Amedas> call, @NonNull Throwable throwable) {
+                                    Log.e(TAG, String.format("amedasCall failure: %s", throwable.getMessage()), throwable);
+                                }
+                            });
                         });
 
                 enableNotifications(targetCharacteristic)
@@ -127,6 +135,26 @@ public class MyBleManager extends ObservableBleManager {
             } else {
                 Log.w(TAG, "Target characteristic is null, cannot initialize notifications.");
             }
+        }
+
+        private void insertSensorData(CombinedData combinedData) {
+            // TODO: 1/29/2025 if end point is ready, please uncomment
+            Call<Void> call = apiService.insert(combinedData);
+            call.enqueue(new Callback<>() {
+                @Override
+                public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, String.format("insert data successfully: %s %d", response.message(), response.code()));
+                    } else {
+                        Log.d(TAG, String.format("insert data failure: %s %d", response.message(), response.code()));
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<Void> call, @NonNull Throwable throwable) {
+                    Log.e(TAG, String.format("insert failure: %s", throwable.getMessage()), throwable);
+                }
+            });
         }
 
         @Override

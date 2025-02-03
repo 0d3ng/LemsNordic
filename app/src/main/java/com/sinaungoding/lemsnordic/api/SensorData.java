@@ -1,4 +1,4 @@
-package com.sinaungoding.lemsnordic;
+package com.sinaungoding.lemsnordic.api;
 
 public class SensorData {
     private int co2;

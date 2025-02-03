@@ -2,6 +2,7 @@
 agp = "8.8.0"
 anychartAndroid = "1.1.5"
 ble = "2.5.1"
+gson = "2.10.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -20,6 +21,7 @@ ble = { module = "no.nordicsemi.android:ble", version.ref = "ble" }
 ble-common = { module = "no.nordicsemi.android:ble-common", version.ref = "ble" }
 ble-livedata = { module = "no.nordicsemi.android:ble-livedata", version.ref = "ble" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

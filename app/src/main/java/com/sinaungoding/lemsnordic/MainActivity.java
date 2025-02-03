@@ -12,14 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.anychart.AnyChart;
-import com.anychart.AnyChartView;
-import com.anychart.chart.common.dataentry.SingleValueDataSet;
-import com.anychart.charts.CircularGauge;
-import com.anychart.enums.Anchor;
-import com.anychart.graphics.vector.text.HAlign;
+import com.sinaungoding.lemsnordic.api.SensorData;
 
 import java.util.ArrayList;
 import java.util.List;
