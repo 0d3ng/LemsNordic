@@ -106,10 +106,11 @@ public class MyBleManager extends ObservableBleManager {
                                     Log.i(TAG, "onResponse: " + call.isExecuted());
                                     if (response.isSuccessful()) {
                                         Log.d(TAG, String.format("amedasCall success: %s %d", response.message(), response.code()));
-                                        Amedas amedas = response.body();
-                                        CombinedData.Data combine = new CombinedData.Data(sensorData, amedas);
-                                        CombinedData combinedData = new CombinedData(SIMPLE_DATE_FORMAT.format(new Date()), combine);
-                                        insertSensorData(combinedData);
+                                        // TODO: 2/5/2025 please parsing error, the timestamp using UTC and change first to local
+//                                        Amedas amedas = response.body();
+//                                        CombinedData.Data combine = new CombinedData.Data(sensorData, amedas);
+//                                        CombinedData combinedData = new CombinedData(SIMPLE_DATE_FORMAT.format(new Date()), combine);
+//                                        insertSensorData(combinedData);
                                     }
                                 }
 
