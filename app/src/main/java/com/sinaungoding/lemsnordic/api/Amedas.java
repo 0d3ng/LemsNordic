@@ -87,4 +87,18 @@ public class Amedas {
     public void setHorizontal_visibility(float horizontal_visibility) {
         this.horizontal_visibility = horizontal_visibility;
     }
+
+    @Override
+    public String toString() {
+        return "Amedas{" +
+                "timestamp='" + timestamp + '\'' +
+                ", temperature=" + temperature +
+                ", wind_direction='" + wind_direction + '\'' +
+                ", wind_speed=" + wind_speed +
+                ", humidity=" + humidity +
+                ", pressure=" + pressure +
+                ", sea_level_pressure=" + sea_level_pressure +
+                ", horizontal_visibility=" + horizontal_visibility +
+                '}';
+    }
 }

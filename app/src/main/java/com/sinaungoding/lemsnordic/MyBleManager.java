@@ -1,19 +1,34 @@
 package com.sinaungoding.lemsnordic;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
+import android.location.Location;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.sinaungoding.lemsnordic.api.Amedas;
 import com.sinaungoding.lemsnordic.api.ApiClient;
 import com.sinaungoding.lemsnordic.api.ApiService;
 import com.sinaungoding.lemsnordic.api.CombinedData;
 import com.sinaungoding.lemsnordic.api.SensorData;
+
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -43,11 +58,18 @@ public class MyBleManager extends ObservableBleManager {
     }
 
     private ApiService apiService;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+
+    private Activity activity;
+    private double latitude, longitude;
 
     public MyBleManager(@NonNull Context context) {
         super(context);
+        this.activity = (Activity) context;
         // TODO: 1/29/2025 Please prepare end point from this function
         apiService = ApiClient.getClient(context).create(ApiService.class);
+        AndroidThreeTen.init(context);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
     }
 
     @NonNull
@@ -61,6 +83,7 @@ public class MyBleManager extends ObservableBleManager {
     }
 
     private class MyBleManagerGattCallback extends BleManagerGattCallback {
+        @SuppressLint("MissingPermission")
         @Override
         protected void initialize() {
             super.initialize();
@@ -97,20 +120,50 @@ public class MyBleManager extends ObservableBleManager {
                             Log.i(TAG, "onDataReceived PM25        : " + pm25);
                             Log.i(TAG, "onDataReceived PM4         : " + pm4);
                             Log.i(TAG, "onDataReceived PM10        : " + pm10);
-                            SensorData sensorData = new SensorData(co2, pm1, pm25, pm4, pm10, temperature, hum, 0, 0, timestamp);
+
+                            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(activity, location -> {
+                                if (location != null) {
+                                    latitude = location.getLatitude();
+                                    longitude = location.getLongitude();
+                                } else {
+                                    latitude = 0;
+                                    longitude = 0;
+                                }
+                            });
+                            fusedLocationProviderClient.getLastLocation().addOnFailureListener(activity, e -> {
+                                Log.e(TAG, "onFailure: " + e.getMessage(), e);
+                                latitude = 0;
+                                longitude = 0;
+                            });
+
+                            SensorData sensorData = new SensorData(co2, pm1, pm25, pm4, pm10, temperature, hum, latitude, longitude, timestamp);
                             dataLiveData.postValue(sensorData);
                             Call<Amedas> amedasCall = apiService.getLastAmedas();
                             amedasCall.enqueue(new Callback<>() {
+                                @RequiresApi(api = Build.VERSION_CODES.O)
                                 @Override
                                 public void onResponse(@NonNull Call<Amedas> call, @NonNull Response<Amedas> response) {
                                     Log.i(TAG, "onResponse: " + call.isExecuted());
                                     if (response.isSuccessful()) {
                                         Log.d(TAG, String.format("amedasCall success: %s %d", response.message(), response.code()));
                                         // TODO: 2/5/2025 please parsing error, the timestamp using UTC and change first to local
-//                                        Amedas amedas = response.body();
-//                                        CombinedData.Data combine = new CombinedData.Data(sensorData, amedas);
-//                                        CombinedData combinedData = new CombinedData(SIMPLE_DATE_FORMAT.format(new Date()), combine);
-//                                        insertSensorData(combinedData);
+                                        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+                                        Amedas amedas = response.body();
+                                        Log.i(TAG, "onResponse: " + amedas);
+                                        LocalDateTime localDateTime = LocalDateTime.parse(amedas.getTimestamp(), formatter);
+
+                                        ZoneId localZoneId = ZoneId.of("Asia/Tokyo");
+                                        ZonedDateTime zonedDateTimeUTC = localDateTime.atZone(ZoneId.of("UTC"));
+                                        ZonedDateTime zonedDateTimeLocal = zonedDateTimeUTC.withZoneSameInstant(localZoneId);
+                                        DateTimeFormatter localFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                                        String timestamp = zonedDateTimeLocal.format(localFormatter);
+                                        Log.i(TAG, "onResponse: " + timestamp);
+                                        amedas.setTimestamp(timestamp);
+                                        CombinedData.Data combine = new CombinedData.Data(sensorData, amedas);
+                                        CombinedData combinedData = new CombinedData(SIMPLE_DATE_FORMAT.format(new Date()), combine);
+                                        insertSensorData(combinedData);
+                                    } else {
+                                        Log.d(TAG, String.format("message: %s %d", response.message(), response.code()));
                                     }
                                 }
 

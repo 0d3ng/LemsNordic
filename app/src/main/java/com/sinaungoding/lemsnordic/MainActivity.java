@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private MyBleManager bleManager;
     private static final int PERMISSION_REQUEST_CODE = 101;
+    private static final int LOCATION_REQUEST_CODE = 1000;
     private final List<BluetoothDevice> scannedDevices = new ArrayList<>();
     private TextView tvDevice;
 
@@ -182,6 +183,13 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Log.e(TAG, "Permissions denied.");
                 updateStatus("Permissions denied.");
+            }
+        }
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "onRequestPermissionsResult: Permission location granted.");
+            } else {
+                updateStatus("Permission location denied.");
             }
         }
     }
