@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Lems Nordic</string>
-    <string name="base_url">http://192.168.10.3:8001</string>
+    <string name="base_url">http://103.106.72.181:9092</string>
     <string name="app_token">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3JfaWQiOiI2NzdlMTU1NTlhYTU1NzFmM2NmYmM0MWIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZGV2X2lkIjoiNjdhMDczY2VkYWY5OTE0ODMwODA1MDNkIiwiZGV2X2NvZGUiOiJ2dGNtOW4iLCJleHAiOjE3NDEyMTUxMzl9.cMjF2OzPHENqoP-G3-JBdjez69EBjtgwLwTRGZNGrFs</string>
 </resources>
