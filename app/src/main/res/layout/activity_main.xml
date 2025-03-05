@@ -366,7 +366,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginEnd="8dp"
                             android:layout_marginBottom="8dp"
-                            android:text="PM4 (\u00B5g/m\u00B3)"
+                            android:text="PM10 (\u00B5g/m\u00B3)"
                             android:textColor="@color/white"
                             android:textSize="12sp" />
                     </LinearLayout>
