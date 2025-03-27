@@ -32,10 +32,12 @@ public class CombinedData {
     public static class Data {
         private SensorData btevs1;
         private Amedas amedas;
+        private Tenki tenki;
 
-        public Data(SensorData btevs1, Amedas amedas) {
+        public Data(SensorData btevs1, Amedas amedas, Tenki tenki) {
             this.btevs1 = btevs1;
             this.amedas = amedas;
+            this.tenki = tenki;
         }
 
         // Getters and setters
@@ -53,6 +55,14 @@ public class CombinedData {
 
         public void setAmedas(Amedas amedas) {
             this.amedas = amedas;
+        }
+
+        public Tenki getTenki() {
+            return tenki;
+        }
+
+        public void setTenki(Tenki tenki) {
+            this.tenki = tenki;
         }
     }
 }

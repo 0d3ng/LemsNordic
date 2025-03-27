@@ -11,4 +11,7 @@ public interface ApiService {
 
     @GET("/api/v1/amedas/last")
     Call<Amedas> getLastAmedas();
+
+    @GET("/api/v1/tenki/last")
+    Call<Tenki> getLastTenki();
 }
