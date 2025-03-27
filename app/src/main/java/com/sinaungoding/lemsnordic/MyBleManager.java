@@ -24,6 +24,7 @@ import com.sinaungoding.lemsnordic.api.ApiClient;
 import com.sinaungoding.lemsnordic.api.ApiService;
 import com.sinaungoding.lemsnordic.api.CombinedData;
 import com.sinaungoding.lemsnordic.api.SensorData;
+import com.sinaungoding.lemsnordic.api.Tenki;
 
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
@@ -146,22 +147,39 @@ public class MyBleManager extends ObservableBleManager {
                                     Log.i(TAG, "onResponse: " + call.isExecuted());
                                     if (response.isSuccessful()) {
                                         Log.d(TAG, String.format("amedasCall success: %s %d", response.message(), response.code()));
-                                        // TODO: 2/5/2025 please parsing error, the timestamp using UTC and change first to local
-                                        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-                                        Amedas amedas = response.body();
-                                        Log.i(TAG, "onResponse: " + amedas);
-                                        LocalDateTime localDateTime = LocalDateTime.parse(amedas.getTimestamp(), formatter);
+                                        Call<Tenki> tenkiCall = apiService.getLastTenki();
+                                        tenkiCall.enqueue(new Callback<Tenki>() {
+                                            @Override
+                                            public void onResponse(@NonNull Call<Tenki> call, @NonNull Response<Tenki> responseTenki) {
+                                                if (responseTenki.isSuccessful()) {
+                                                    Log.d(TAG, String.format("tenki success: %s %d", responseTenki.message(), responseTenki.code()));
+                                                    DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+                                                    Amedas amedas = response.body();
+                                                    Log.i(TAG, "onResponse: " + amedas);
+                                                    LocalDateTime localDateTime = LocalDateTime.parse(amedas.getTimestamp(), formatter);
 
-                                        ZoneId localZoneId = ZoneId.of("Asia/Tokyo");
-                                        ZonedDateTime zonedDateTimeUTC = localDateTime.atZone(ZoneId.of("UTC"));
-                                        ZonedDateTime zonedDateTimeLocal = zonedDateTimeUTC.withZoneSameInstant(localZoneId);
-                                        DateTimeFormatter localFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                                        String timestamp = zonedDateTimeLocal.format(localFormatter);
-                                        Log.i(TAG, "onResponse: " + timestamp);
-                                        amedas.setTimestamp(timestamp);
-                                        CombinedData.Data combine = new CombinedData.Data(sensorData, amedas);
-                                        CombinedData combinedData = new CombinedData(SIMPLE_DATE_FORMAT.format(new Date()), combine);
-                                        insertSensorData(combinedData);
+                                                    ZoneId localZoneId = ZoneId.of("Asia/Tokyo");
+                                                    ZonedDateTime zonedDateTimeUTC = localDateTime.atZone(ZoneId.of("UTC"));
+                                                    ZonedDateTime zonedDateTimeLocal = zonedDateTimeUTC.withZoneSameInstant(localZoneId);
+                                                    DateTimeFormatter localFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                                                    String timestamp = zonedDateTimeLocal.format(localFormatter);
+                                                    Log.i(TAG, "onResponse: " + timestamp);
+                                                    amedas.setTimestamp(timestamp);
+
+                                                    Tenki tenki = responseTenki.body();
+                                                    CombinedData.Data combine = new CombinedData.Data(sensorData, amedas, tenki);
+                                                    CombinedData combinedData = new CombinedData(SIMPLE_DATE_FORMAT.format(new Date()), combine);
+                                                    insertSensorData(combinedData);
+                                                } else
+                                                    Log.d(TAG, String.format("message: %s %d", responseTenki.message(), responseTenki.code()));
+                                            }
+
+                                            @Override
+                                            public void onFailure(@NonNull Call<Tenki> call, @NonNull Throwable throwable) {
+                                                Log.e(TAG, String.format("tenkiCall failure: %s", throwable.getMessage()), throwable);
+                                            }
+                                        });
+
                                     } else {
                                         Log.d(TAG, String.format("message: %s %d", response.message(), response.code()));
                                     }
@@ -192,7 +210,6 @@ public class MyBleManager extends ObservableBleManager {
         }
 
         private void insertSensorData(CombinedData combinedData) {
-            // TODO: 1/29/2025 if end point is ready, please uncomment
             Call<Void> call = apiService.insert(combinedData);
             call.enqueue(new Callback<>() {
                 @Override
