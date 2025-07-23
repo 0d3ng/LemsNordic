@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Lems Nordic</string>
-    <string name="base_url">http://103.172.249.254:8000</string>
-    <string name="app_token">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3JfaWQiOiI2NzdlMTU1NTlhYTU1NzFmM2NmYmM0MWIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZGV2X2lkIjoiNjdhMDczY2VkYWY5OTE0ODMwODA1MDNkIiwiZGV2X2NvZGUiOiJ2dGNtOW4iLCJleHAiOjE3NjUxOTA4Njh9.B6LCMLdCKH2DFXqA9i3I81k2h9UDMPdeaZU46te0OW0</string>
+<!--    polinema server-->
+<!--    <string name="base_url">http://103.172.249.254:8000</string>-->
+<!--    lab server-->
+    <string name="base_url">https://fastapi.sinaungoding.com</string>
+    <string name="app_token">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3JfaWQiOiI2NzdlMTU1NTlhYTU1NzFmM2NmYmM0MWIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZGV2X2lkIjoiNjdhMDczY2VkYWY5OTE0ODMwODA1MDNkIiwiZGV2X2NvZGUiOiJ2dGNtOW4iLCJleHAiOjE3NjY0ODkwMjR9.O7EyMkRC1MhKp_sNg8Ks0_rQE5_0hr8kxLcgm24AGYs</string>
 </resources>
